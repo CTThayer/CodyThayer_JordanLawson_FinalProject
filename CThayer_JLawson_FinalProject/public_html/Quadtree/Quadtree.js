@@ -1,7 +1,28 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * File: Quadtree.js
+ * 
+ * Class with methods for creating, maintaing and using a Quadtree.
+ * 
  */
 
+function Quadtree(maxBounds, maxObjs, maxDepth) {
+    this.root = new QNode(maxBounds);
+    this.maxObjects = maxObjs;
+    this.maxDepth = maxDepth;
+};
 
+Quadtree.prototype.insert = function(object) {
+    
+};
+
+Quadtree.prototype.remove = function(object) {
+    
+};
+
+Quadtree.prototype.clear = function() {
+    
+};
+
+Quadtree.prototype.getObjectsNear = function(object) {
+    
+};
