@@ -26,7 +26,7 @@ function MyGame() {
     this.mPatrolManager = null;
     this.mHero = null; 
     this.mMsg = null;
-    this.mMsg2 = null
+    this.mMsg2 = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 

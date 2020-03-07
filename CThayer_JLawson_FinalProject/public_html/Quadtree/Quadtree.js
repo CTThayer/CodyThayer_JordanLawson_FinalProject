@@ -26,3 +26,7 @@ Quadtree.prototype.clear = function() {
 Quadtree.prototype.getObjectsNear = function(object) {
     
 };
+
+Quadtree.prototype._insertHelper = function(node, object) {
+    
+};
