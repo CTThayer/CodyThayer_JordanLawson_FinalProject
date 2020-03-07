@@ -10,7 +10,7 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Platform(texture, position) {
-    this.mPlatform = new TextureRenderable(texture);
+    this.mPlatform = new SpriteRenderable(texture);
 
     this.mPlatform.setColor([1, 1, 1, 0]);
     this.mPlatform.getXform().setPosition(position[0], position[1]);

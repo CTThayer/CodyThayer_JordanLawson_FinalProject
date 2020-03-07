@@ -47,9 +47,9 @@ MyGame.prototype.initialize = function () {
         this.mPlatformArray.push(this.mPlatform);
     }
     
-    this.mDyePack1 = new DyePack(this.kMinionSprite, this.mPlatformArray, [this.mDyePack2, this.mDyePack3]);
-    this.mDyePack2 = new DyePack(this.kMinionSprite, this.mPlatformArray, [this.mDyePack1, this.mDyePack3]);
-    this.mDyePack3 = new DyePack(this.kMinionSprite, this.mPlatformArray, [this.mDyePack1, this.mDyePack2]);
+    this.mDyePack1 = new DyePack(this.kMinionSprite, this.mPlatformArray);
+    this.mDyePack2 = new DyePack(this.kMinionSprite, this.mPlatformArray);
+    this.mDyePack3 = new DyePack(this.kMinionSprite, this.mPlatformArray);
     
     this.mPlatformArray[1].mPlatform.getXform().setPosition(0,50);
     this.mPlatformArray[2].mPlatform.getXform().setPosition(0,-50);
@@ -96,7 +96,29 @@ MyGame.prototype.draw = function () {
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
-    this.mDyePack1.update(this.mPlatformArray);
-    this.mDyePack2.update(this.mPlatformArray);
-    this.mDyePack3.update(this.mPlatformArray);
+    
+    var i = 0;
+        // Check for platform collisions
+    for(i = 0; i < this.mPlatformArray.length; i++){
+        var h = [];
+        if( this.mDyePack1.pixelTouches(this.mPlatformArray[i], h) ){
+            this.mDyePack1.mDyePack.setColor([1,0,0,1]);
+        } else {
+            this.mDyePack1.mDyePack.setColor([0,0,0,0]);
+        }
+        if( this.mDyePack2.pixelTouches(this.mPlatformArray[i], h) ){
+            this.mDyePack2.mDyePack.setColor([1,0,0,1]);
+        } else {
+            this.mDyePack2.mDyePack.setColor([0,0,0,0]);
+        }
+        if( this.mDyePack3.pixelTouches(this.mPlatformArray[i], h) ){
+            this.mDyePack3.mDyePack.setColor([1,0,0,1]);
+        } else {
+            this.mDyePack3.mDyePack.setColor([0,0,0,0]);
+        }
+    } 
+    
+    this.mDyePack1.update();
+    this.mDyePack2.update();
+    this.mDyePack3.update();
 };
