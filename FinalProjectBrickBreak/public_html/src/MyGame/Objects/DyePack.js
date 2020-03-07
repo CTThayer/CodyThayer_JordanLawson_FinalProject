@@ -19,7 +19,7 @@ function DyePack(spriteTexture, platformArray, dyePackArray) {
 
     
     this.platformArray = platformArray;
-    this.dyePackArray = dyePackArray;
+
     
     this.mDyePack = new SpriteRenderable(spriteTexture);
     this.mDyePack.setColor([1, 1, 1, 0.1]);
@@ -50,15 +50,7 @@ DyePack.prototype.update = function () {
         this.vY *= -1;
     }
     
-    // Check for platform collisions
-    for(i = 0; i < this.platformArray.length; i++){
-        var h = [];
-        if( this.mDyePack.pixelTouches(this.platformArray[i], h) ){
-            this.mDyePack.setColor([1,0,0,1]);
-        } else {
-            this.mDyePack.setColor([0,0,0,0]);
-        }
-    } 
+
     
     
     // Check for dyepack collisions
