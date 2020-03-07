@@ -24,6 +24,7 @@ function MyGame() {
     this.mDyePack3 = null;
     
     this.mPlatform = null;
+    this.mPlatformArray = [];
     
     this.mQuadTree = null;
 }
@@ -40,8 +41,6 @@ MyGame.prototype.initialize = function () {
             // sets the background to gray
     
     this.mPlatform = null;
-    this.mPlatformArray = [];
-    
     var i;
     for(i = 0; i < 10; i++){
         this.mPlatform = new Platform(this.kPlatformSprite, [0,0]);

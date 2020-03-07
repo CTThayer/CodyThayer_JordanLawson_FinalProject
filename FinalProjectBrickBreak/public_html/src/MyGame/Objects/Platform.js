@@ -15,7 +15,6 @@ function Platform(texture, position) {
     this.mPlatform.setColor([1, 1, 1, 0]);
     this.mPlatform.getXform().setPosition(position[0], position[1]);
     this.mPlatform.getXform().setSize(30, 3.75);
-    this.mXform = this.mPlatform.getXform();
                                 // show each element for mAnimSpeed updates
     GameObject.call(this, this.mPlatform);
 }
