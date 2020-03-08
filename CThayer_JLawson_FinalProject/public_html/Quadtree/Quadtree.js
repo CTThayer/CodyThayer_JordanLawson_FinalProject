@@ -33,7 +33,7 @@ Quadtree.prototype.getObjectsNear = function(object) {
     // Create an array or set to store the nearby objects in
     // Using set eliminates the need to cull duplicates in the output array
 //  var results = [];           // use if out is an array
-    var results = new set();    // use if out is a set
+    var results = new Set();    // use if out is a set
 
     
     // Get object's bounds in [minX, maxX, minY, maxY] format
