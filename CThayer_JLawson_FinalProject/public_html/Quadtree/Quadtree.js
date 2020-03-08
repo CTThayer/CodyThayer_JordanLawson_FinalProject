@@ -30,8 +30,11 @@ Quadtree.prototype.remove = function(object) {
 };
 
 Quadtree.prototype.getObjectsNear = function(object) {
-    // Create an array to store the nearby objects in
-    var results = [];
+    // Create an array or set to store the nearby objects in
+    // Using set eliminates the need to cull duplicates in the output array
+//  var results = [];           // use if out is an array
+    var results = new set();    // use if out is a set
+
     
     // Get object's bounds in [minX, maxX, minY, maxY] format
     var oBounds = _calcObjectBounds(object);
@@ -90,7 +93,8 @@ Quadtree.prototype._removeHelper = function(node, object, depth, out) {
 Quadtree.prototype._getObjectsHelper = function(node, object, depth, out) {
     if (node.objects != null) {
         for(var i = 0; i < node.objects.length; i++) {
-            out.push(node.objects[i]);
+//          out.push(node.objects[i]);  // use if out is an array
+            out.add(node.objects[i]);   // us if out is a set
         }
     }
 };
