@@ -71,5 +71,16 @@
             Your browser does not support the HTML5 canvas.
             <!-- this message will show only if WebGL clearing failed -->
         </canvas>
+        
+        <br>
+        <div id='UpdateFrame'></div>
+        <hr>
+        <script>
+            var gUpdateFrame = function(elapsed) {
+                var elm = document.getElementById("UpdateFrame");
+                elm.innerHTML =
+                    "<b>Frames per second: </b>" + (1000/elapsed).toFixed(2) + "<br>";
+            };
+        </script>
     </body>
 </html>

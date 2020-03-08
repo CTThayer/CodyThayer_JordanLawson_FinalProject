@@ -46,6 +46,8 @@ gEngine.GameLoop = (function () {
             }
             // Step D: now let's draw
             this.draw();    // Call Scene.draw()
+            
+            gUpdateFrame(elapsedTime);
         } else {
             // this scene is done, unload it!
             mMyGame.unloadScene();
