@@ -8,7 +8,7 @@
 function QuadtreeManager(staticObjects, dynamicObjects, bounds, objPerNode, maxDepth) {
     this.staticColliders = staticObjects;
     this.dynamicColliders = dynamicObjects;
-    this.mQuadTree = new QuadTree(bounds, objPerNode, maxDepth);
+    this.mQuadTree = new Quadtree(bounds, objPerNode, maxDepth);
     for(var i = 0; i < this.staticColliders.length; i++) {
         this.mQuadTree.insert(this.staticColliders[i]);
     }
@@ -27,10 +27,7 @@ QuadtreeManager.prototype.updateCollisions = function(collisionFunc) {
     for(var i = 0; i < this.dynamicColliders.length; i++) {
         var hitSet = this.mQuadTree.getObjectsNear(this.dynamicColliders[i]);
         for(let item of hitSet) {
-            var hitLoc = [];
-            if (this.dynamicColliders[i].pixelTouches(item, hitLoc)) {
-                collisionFunct(this.dynamicColliders[i]);
-            }
+            collisionFunct(this.dynamicColliders[i], item);
         }
     }
 };

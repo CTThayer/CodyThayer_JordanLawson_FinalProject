@@ -13,10 +13,10 @@ function QNode(bounds) {
 
 QNode.prototype.split = function() {
     // Calculate bounds of new child nodes
-    var w = bounds[1] - bounds[0];
-    var h = bounds[3] - bounds[2];
-    var midX = bounds[0] + w / 2;
-    var midY = bounds[2] + h / 2;
+    var w = this.bounds[1] - this.bounds[0];
+    var h = this.bounds[3] - this.bounds[2];
+    var midX = this.bounds[0] + w / 2;
+    var midY = this.bounds[2] + h / 2;
     
     var topRight = [midX, this.bounds[1], midY, this.bounds[3]];
     var topLeft = [this.bounds[0], midX, midY, this.bounds[3]];

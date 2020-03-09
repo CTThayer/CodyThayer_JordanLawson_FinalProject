@@ -19,7 +19,7 @@ function MyGame_1() {
     // The camera to view the scene
     this.mCamera = null;
     
-    this.mDyePackArray;
+    this.mDyePackArray = [];
 
     this.mPlatform = null;
     this.mPlatformArray = [];
@@ -29,7 +29,7 @@ function MyGame_1() {
     
     this.bfCollisionManager = null;
 }
-gEngine.Core.inheritPrototype(MyGame, Scene);
+gEngine.Core.inheritPrototype(MyGame_1, Scene);
 
 MyGame_1.prototype.initialize = function () {
     // Step A: set up the cameras
@@ -45,7 +45,8 @@ MyGame_1.prototype.initialize = function () {
     this.mPlatform = null;
     var i;
     for (i = 0; i < 1000; i++) {
-        this.mPlatform = new Platform(this.kPlatformSprite, [0, 0]);
+        var loc = [Math.random() * (75 - (-75)) + (-75), Math.random() * (100 - (-100)) + (-100)];
+        this.mPlatform = new Platform(this.kPlatformSprite, loc);
         this.mPlatformArray.push(this.mPlatform);
     }
 
@@ -115,10 +116,10 @@ MyGame_1.prototype.update = function () {
     
     // Run collision based on collision mode
     if(this.mQuadTreeMode) { // && this.mQuadtreeManager !== null){
-        this.mQuadTreeMode.updateCollisions();
+        this.mQuadTreeMode.updateCollisions(collideReaction);
     }
     else {
-        this.mBruteforceCollision.collideAll();
+        this.mBruteforceCollision.collideAll(collideReaction);
     }
     
     // Update dyepacks
@@ -129,6 +130,11 @@ MyGame_1.prototype.update = function () {
     gUpdateFrame();
 };
 
-MyGame_1.prototype.collideReaction = function (objA, objB, hitLoc) {
-    objA.setColor([1, 0, 0, 0]);
+MyGame_1.prototype.collideReaction = function (objA, objB) {
+    var h = [];
+    if (objA.pixelTouches(objB, h)) {
+        objA.mDyePack.setColor([1, 0, 0, 1]);
+    } else {
+        objB.mDyePack.setColor([0, 0, 0, 0]);
+    }
 };
