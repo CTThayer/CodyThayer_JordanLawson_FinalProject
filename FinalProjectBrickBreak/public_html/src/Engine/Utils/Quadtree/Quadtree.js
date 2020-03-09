@@ -13,20 +13,20 @@ function Quadtree(maxBounds, maxObjs, maxDepth) {
 
 Quadtree.prototype.insert = function(object) {
     // Get object's bounds in [minX, maxX, minY, maxY] format
-    var oBounds = _calcObjectBounds(object);
+    var oBounds = this._calcObjectBounds(object);
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
     // Pass _insertHelper method so it can be called at correct insert locations
-    this._traversalHelper(this.root, object, oBounds, 0, null, _insertHelper);
+    this._traversalHelper(this.root, object, oBounds, 0, null, this._insertHelper);
 };
 
 Quadtree.prototype.remove = function(object) {
     // Get object's bounds in [minX, maxX, minY, maxY] format
-    var oBounds = _calcObjectBounds(object);
+    var oBounds = this._calcObjectBounds(object);
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
     // Pass _insertHelper method so it can be called at correct insert locations
-    this._traversalHelper(this.root, object, oBounds, 0, null, _removeHelper);
+    this._traversalHelper(this.root, object, oBounds, 0, null, this._removeHelper);
 };
 
 Quadtree.prototype.getObjectsNear = function(object) {
@@ -37,11 +37,11 @@ Quadtree.prototype.getObjectsNear = function(object) {
 
     
     // Get object's bounds in [minX, maxX, minY, maxY] format
-    var oBounds = _calcObjectBounds(object);
+    var oBounds = this._calcObjectBounds(object);
     
     // Use _traversalHelper method to recursively get to the object in the tree node(s)
     // Pass _getObjectsHelper method so other objects in the node(s) can be fetched
-    this._traversalHelper(this.root, object, oBounds, 0, results, _getObjectsHelper);
+    this._traversalHelper(this.root, object, oBounds, 0, results, this._getObjectsHelper);
     
     return results;
 };
@@ -59,7 +59,7 @@ Quadtree.prototype._traversalHelper = function(node, object, objBounds, d, out, 
         if (node.nodes.length == 4) {
             var quads = node.getQuadrants(objBounds);
             for(var i = 0; i < quads.length; i++) {
-                _traversalHelper(node.nodes[i], object, objBounds, depth, func);
+                this._traversalHelper(node.nodes[i], object, objBounds, depth, func);
             }
         }
         if (node.nodes.length == 0 && node.testBounds(objBounds)) {
