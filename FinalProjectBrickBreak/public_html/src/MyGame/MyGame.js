@@ -108,10 +108,44 @@ MyGame.prototype.update = function () {
         this.mQuadTreeMode = !this.mQuadTreeMode;
         
         if(this.mQuadTree === null){
-            this.mQuadTree = new QuadTree();
-        }
+            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 100, 10);
+            var i = 0;
+            for(i = 0; i < this.mPlatformArray.length; i++){
+                this.mQuadTree.insert(this.mPlatformArray[i]);
+            }
+            this.mQuadTree.insert(this.mDyePack1);
+            this.mQuadTree.insert(this.mDyePack2);
+            this.mQuadTree.insert(this.mDyePack3);
+        } else this.mQuadTree = null;
     }
 
+    if (this.mQuadTreeMode){
+        var objects = [];
+        objects = this.mQuadTree.getObjectsNear(this.mDyePack1);
+        
+        var i = 0;
+        for(i = 0; i < objects.length; i++){
+            var h = [];
+            if (this.mDyePack1.pixelTouches(objects[i], h)) {
+                this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
+                skip1 = true;
+            } else if (!skip1) {
+                this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
+            }
+            if (this.mDyePack2.pixelTouches(objects[i], h)) {
+                this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
+                skip2 = true;
+            } else if (!skip2) {
+                this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
+            }
+            if (this.mDyePack3.pixelTouches(objects[i], h)) {
+                this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
+                skip3 = true;
+            } else if (!skip3) {
+                this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
+            }
+        }
+    }
 
     if (!this.mQuadTreeMode) {
 
