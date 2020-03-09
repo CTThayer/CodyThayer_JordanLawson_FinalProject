@@ -27,6 +27,8 @@ function MyGame() {
     this.mHero = null; 
     this.mMsg = null;
     this.mMsg2 = null;
+    this.mQuadTree = null;
+    this.mQuadTreeMode = false;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -99,13 +101,28 @@ MyGame.prototype.draw = function () {
 // anything from this function!
 MyGame.prototype.update = function () {
 
+    // Change to QuadTree
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Z)) {  
+        this.mQuadTreeMode = !this.mQuadTreeMode;
+        if(this.mQuadTree === null){
+            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 4, 10);
+            this.mQuadTree.insert(this.mHero);
+            this.mDyePackManager.setUpTree(this.mQuadTree);
+            this.mPatrolManager.setUpTree(this.mQuadTree);
+        } else {
+            this.mQuadTree = null;
+            this.mDyePackManager.mQuadTree = null;
+            this.mPatrolManager.mQuadTree = null;
+        }
+    }
+
     this.mPatrolManager.update();
     this.mDyePackManager.update();
     this.mHero.update();
     
     var msg1 = "Partols: " + this.mPatrolManager.patrolArray.length + " "
     + " DyePacks: " + this.mDyePackManager.dyePackArray.length + " "
-    + "Auto Spawning: " + this.mPatrolManager.spawnMode;
+    + "Auto Spawning: " + this.mPatrolManager.spawnMode + " Quad Tree Mode: " + this.mQuadTreeMode;
     this.mMsg.setText(msg1);
     
     var msg2 = "Spawn: C, Auto-Spawn: P, Head Hit: J, DyePack: Space, DyePack Hit: S, DyePack Slow: D, Hero Hit: Q";

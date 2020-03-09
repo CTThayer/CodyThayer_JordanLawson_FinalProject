@@ -11,7 +11,6 @@ function PatrolManager(wingTexture, headTexture, boxTexture, initPosition, WCBou
     this.boxTexture = boxTexture;
     this.initPosition = initPosition;
     this.WCBounds = WCBounds;
-    this.mQuadTree = null;
 
     // ONLY FOR CHECKING AND CALLING COLLISION
     this.dyePackArray = dyePackArray;
@@ -23,6 +22,8 @@ function PatrolManager(wingTexture, headTexture, boxTexture, initPosition, WCBou
     this.spawnMode = false;
     this.counter = 0;
     this.nextInterval;
+
+    this.mQuadTree = null;
 }
 
 PatrolManager.prototype.draw = function (aCamera) {
@@ -37,8 +38,19 @@ PatrolManager.prototype.spawnPatrol = function () {
     var newPatrol = new Patrol(this.wingTexture, this.headTexture, this.boxTexture, this.initPosition, this.WCBounds);
     this.patrolArray.push(newPatrol);
     this.patrolCount++;
+
+    if (this.mQuadTree !== null) {
+        this.mQuadTree.insert(newPatrol);
+    }
 };
 
+PatrolManager.prototype.setUpTree = function (QuadTree) {
+    this.mQuadTree = QuadTree;
+    var i;
+    for (i = 0; i < this.patrolArray.length; i++) {
+        QuadTree.insert(this.patrolArray[i]);
+    }
+};
 
 PatrolManager.prototype.update = function () {
 
@@ -61,19 +73,69 @@ PatrolManager.prototype.update = function () {
         this.nextInterval = (Math.random() * (180 - 120) + 120);
     }
 
-    var i;
-    for (i = 0; i < this.patrolArray.length; i++) {
-        if (this.patrolArray[i].deleteCheck) {
-            var p = this.patrolArray.shift();
-            p.clear;
-            i--;
-            continue;
-        }
-        this.patrolArray[i].update();
+    if (this.mQuadTree !== null) {
+        var i;
+        for (i = 0; i < this.patrolArray.length; i++) {
+            if (this.patrolArray[i].deleteCheck) {
+                var p = this.patrolArray.shift();
+                p.clear;
+                i--;
+                continue;
+            }
+            this.patrolArray[i].update();
 
-        if (this.mQuadTree !== null) {
-            
-        } else {
+            var objects = this.mQuadTree.getObjectsNear(this.patrolArray[i]);
+            objects = Array.from(objects);
+
+            var j;
+            var h = [];
+            for (j = 0; j < objects.length; j++) {
+                if (objects[j].type === "DyePack") {
+                    if (this.patrolArray[i].mHead.pixelTouches(objects[j], h)) {
+                        this.patrolArray[i].mHead.collide();
+                        objects[j].shake();
+                    } else if (this.patrolArray[i].mBotWing.pixelTouches(objects[j], h)) {
+                        var color = this.patrolArray[i].mBotWing.mWing.getColor();
+                        color[3] += 0.2;
+                        this.patrolArray[i].mBotWing.mWing.setColor(color);
+                        objects.shake();
+                    } else if (this.patrolArray[i].mTopWing.pixelTouches(objects[j], h)) {
+                        var color = this.patrolArray[i].mTopWing.mWing.getColor();
+                        color[3] += 0.2;
+                        this.patrolArray[i].mTopWing.mWing.setColor(color);
+                        objects.shake();
+                    }
+                } else if (objects[j].type === "Hero") {
+                    if (this.patrolArray[i].mHead.pixelTouches(objects[j], h)) {
+                        if (!objects[j].runOscillation) {
+                            objects[j].runOscillation = true;
+                        }
+                    } else if (this.patrolArray[i].mBotWing.pixelTouches(objects[j], h)) {
+                        if (!objects[j].runOscillation) {
+                            objects[j].runOscillation = true;
+                        }
+                    } else if (this.patrolArray[i].mTopWing.pixelTouches(objects[j], h)) {
+                        if (!objects[j].runOscillation) {
+                            objects[j].runOscillation = true;
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        var i;
+        for (i = 0; i < this.patrolArray.length; i++) {
+            if (this.patrolArray[i].deleteCheck) {
+                var p = this.patrolArray.shift();
+                if (this.mQuadTree !== null) {
+                    this.mQuadTree.remove(p);
+                }
+                p.clear;
+                i--;
+                continue;
+            }
+            this.patrolArray[i].update();
+
             var j;
             for (j = 0; j < this.dyePackArray.length; j++) {
 
@@ -95,11 +157,10 @@ PatrolManager.prototype.update = function () {
                     this.patrolArray[i].mTopWing.mWing.setColor(color);
                     this.dyePackArray[j].shake();
                 }
+
+
             }
-        }
 
-
-        if (this.mQuadTree === null) {
             var h = [];
             if (this.patrolArray[i].mHead.pixelTouches(this.hero, h)) {
                 if (!this.hero.runOscillation) {
@@ -116,7 +177,6 @@ PatrolManager.prototype.update = function () {
             }
         }
     }
-
 
 
     // keep this at the end of the update function

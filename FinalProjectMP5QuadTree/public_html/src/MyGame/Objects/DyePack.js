@@ -48,6 +48,7 @@ function DyePack(spriteTexture, position) {
     this.mDyePack.getXform().setSize(2, 3.25);
     this.mDyePack.getXform().incRotationByRad(1.5708);
     this.mDyePack.setElementPixelPositions(510, 595, 23, 153);
+    this.type = "DyePack";
     GameObject.call(this, this.mDyePack);
     this.mObjectShake = null;
 }

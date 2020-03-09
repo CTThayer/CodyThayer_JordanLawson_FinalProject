@@ -14,6 +14,7 @@ function Hero(texture, position, dyePackManager, camera) {
     this.mHero.getXform().setPosition(position[0], position[1]);
     this.mHero.getXform().setSize(9, 12);
     this.mHero.setElementPixelPositions(0, 120, 0, 180);
+    this.type = "Hero";
     
     this.kCycles = 120;
     this.kRate = 0.05;
