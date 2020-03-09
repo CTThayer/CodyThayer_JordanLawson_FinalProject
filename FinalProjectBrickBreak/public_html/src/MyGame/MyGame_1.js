@@ -11,7 +11,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function MyGame() {
+function MyGame_1() {
     this.kMinionSprite = "assets/minion_sprite.png";
     this.kPlatformSprite = "assets/platform.png";
     this.WCBounds = [-100, 100, -75, 75]; // [minX, maxX, minY, maxY]
@@ -26,10 +26,12 @@ function MyGame() {
 
     this.mQuadtreeManager = null;
     this.mQuadTreeMode = false;
+    
+    this.bfCollisionManager = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
-MyGame.prototype.initialize = function () {
+MyGame_1.prototype.initialize = function () {
     // Step A: set up the cameras
     this.mCamera = new Camera(
             vec2.fromValues(0, 0), // position of the camera
@@ -58,43 +60,47 @@ MyGame.prototype.initialize = function () {
     var maxDepth = 5;
     this.mQuadTreeManager = new QuadtreeManager(this.mPlatformArray, this.mDyePackArray, bounds, maxObjPerNode, maxDepth);
 
+    // Setup bruteforce collision manager
+    var allObjs = this.mPlatformArray.slice(0, this.mPlatformArray.length - 1);
+    allObjs = allObjs.concat(this.mDyePackArray);
+    this.mBruteforceCollision = new BruteforceCollision(allObjs);
 
     this.mPlatform = null;
 
 };
 
 
-MyGame.prototype.loadScene = function () {
+MyGame_1.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kMinionSprite);
     gEngine.Textures.loadTexture(this.kPlatformSprite);
 };
 
-MyGame.prototype.unloadScene = function () {
+MyGame_1.prototype.unloadScene = function () {
     gEngine.Textures.loadTexture(this.kMinionSprite);
     gEngine.Textures.loadTexture(this.kPlatformSprite);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
 // importantly, make sure to _NOT_ change any state.
-MyGame.prototype.draw = function () {
+MyGame_1.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
     this.mCamera.setupViewProjection();
 
-    this.mDyePack1.draw(this.mCamera);
-    this.mDyePack2.draw(this.mCamera);
-    this.mDyePack3.draw(this.mCamera);
-
     var i;
     for (i = 0; i < this.mPlatformArray.length; i++) {
         this.mPlatformArray[i].draw(this.mCamera);
+    }
+    var j;
+    for (j = 0; j < this.mDyePackArray.length; i++) {
+        this.mDyePackArray[j].draw(this.mCamera);
     }
 
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
-MyGame.prototype.update = function () {
+MyGame_1.prototype.update = function () {
 
     // Create more platforms
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
@@ -102,73 +108,27 @@ MyGame.prototype.update = function () {
         this.mPlatformArray.push(newPlatform);
     }
 
-    // Change to QuadTree
+    // Change to QuadTree Mode
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Q)) {
         this.mQuadTreeMode = !this.mQuadTreeMode;
     }
     
-    
+    // Run collision based on collision mode
     if(this.mQuadTreeMode) { // && this.mQuadtreeManager !== null){
         this.mQuadTreeMode.updateCollisions();
     }
     else {
-
-        var i = 0;
-        // Check for platform collisions
-        var skip1 = false;
-        var skip2 = false;
-        var skip3 = false;
-        for (i = 0; i < this.mPlatformArray.length; i++) {
-            var h = [];
-            if (this.mDyePack1.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-                skip1 = true;
-            } else if (!skip1) {
-                this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
-            }
-            if (this.mDyePack2.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-                skip2 = true;
-            } else if (!skip2) {
-                this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
-            }
-            if (this.mDyePack3.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-                skip3 = true;
-            } else if (!skip3) {
-                this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
-            }
-        }
-        var h = [];
-        if (this.mDyePack1.pixelTouches(this.mDyePack2, h) || this.mDyePack1.pixelTouches(this.mDyePack3, h)) {
-            this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-            skip1 = true;
-        } else if (!skip1) {
-            this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
-        }
-
-        if (this.mDyePack2.pixelTouches(this.mDyePack1, h) || this.mDyePack1.pixelTouches(this.mDyePack3, h)) {
-            this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-            skip2 = true;
-        } else if (!skip2) {
-            this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
-        }
-
-        if (this.mDyePack3.pixelTouches(this.mDyePack1, h) || this.mDyePack1.pixelTouches(this.mDyePack2, h)) {
-            this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-            skip3 = true;
-        } else if (!skip3) {
-            this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
-        }
+        this.mBruteforceCollision.collideAll();
     }
-
-    this.mDyePack1.update();
-    this.mDyePack2.update();
-    this.mDyePack3.update();
-
+    
+    // Update dyepacks
+    for (var j = 0; j < this.mDyePackArray.length; j++) {
+        this.mDyePackArray[j].update();
+    }
+    
     gUpdateFrame();
 };
 
-MyGame.prototype.collideReaction = function (reactingObj) {
-    reactingObj.setColor([0, 0, 0, 0]);
+MyGame_1.prototype.collideReaction = function (objA, objB, hitLoc) {
+    objA.setColor([1, 0, 0, 0]);
 };
