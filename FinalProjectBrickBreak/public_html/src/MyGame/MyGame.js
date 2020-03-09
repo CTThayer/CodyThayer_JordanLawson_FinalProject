@@ -97,6 +97,11 @@ MyGame.prototype.draw = function () {
 // anything from this function!
 MyGame.prototype.update = function () {
 
+     // Check for platform collisions
+     var skip1 = false;
+     var skip2 = false;
+     var skip3 = false;
+
     // Create more platforms
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         var newPlatform = new Platform(this.kPlatformSprite, [Math.random() * (75 - (-75)) + (-75), Math.random() * (100 - (-100)) + (-100)]);
@@ -108,7 +113,7 @@ MyGame.prototype.update = function () {
         this.mQuadTreeMode = !this.mQuadTreeMode;
         
         if(this.mQuadTree === null){
-            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 100, 10);
+            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 4, 10);
             var i = 0;
             for(i = 0; i < this.mPlatformArray.length; i++){
                 this.mQuadTree.insert(this.mPlatformArray[i]);
@@ -122,25 +127,45 @@ MyGame.prototype.update = function () {
     if (this.mQuadTreeMode){
         var objects = [];
         objects = this.mQuadTree.getObjectsNear(this.mDyePack1);
+        objects = Array.from(objects);
         
         var i = 0;
         for(i = 0; i < objects.length; i++){
             var h = [];
-            if (this.mDyePack1.pixelTouches(objects[i], h)) {
+            
+            if (this.mDyePack1 !== objects[i] && this.mDyePack1.pixelTouches(objects[i], h)) {
                 this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-                skip1 = true;
-            } else if (!skip1) {
+                break;
+            } else {
                 this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
             }
-            if (this.mDyePack2.pixelTouches(objects[i], h)) {
+        }
+        
+        objects = this.mQuadTree.getObjectsNear(this.mDyePack2);
+        objects = Array.from(objects);
+        
+        var i = 0;
+        for(i = 0; i < objects.length; i++){
+            var h = [];
+            
+            if (this.mDyePack2 !== objects[i] && this.mDyePack2.pixelTouches(objects[i], h)) {
                 this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-                skip2 = true;
-            } else if (!skip2) {
+                break;
+            } else {
                 this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
             }
-            if (this.mDyePack3.pixelTouches(objects[i], h)) {
+        }
+        
+        objects = this.mQuadTree.getObjectsNear(this.mDyePack3);
+        objects = Array.from(objects);
+        
+        var i = 0;
+        for(i = 0; i < objects.length; i++){
+            var h = [];
+            
+            if (this.mDyePack3 !== objects[i] && this.mDyePack3.pixelTouches(objects[i], h)) {
                 this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-                skip3 = true;
+                break;
             } else if (!skip3) {
                 this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
             }
@@ -150,10 +175,6 @@ MyGame.prototype.update = function () {
     if (!this.mQuadTreeMode) {
 
         var i = 0;
-        // Check for platform collisions
-        var skip1 = false;
-        var skip2 = false;
-        var skip3 = false;
         for (i = 0; i < this.mPlatformArray.length; i++) {
             var h = [];
             if (this.mDyePack1.pixelTouches(this.mPlatformArray[i], h)) {

@@ -11,7 +11,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function MyGame_1() {
+function MyGame() {
     this.kMinionSprite = "assets/minion_sprite.png";
     this.kPlatformSprite = "assets/platform.png";
     this.WCBounds = [-100, 100, -75, 75]; // [minX, maxX, minY, maxY]
@@ -29,9 +29,9 @@ function MyGame_1() {
     
     this.bfCollisionManager = null;
 }
-gEngine.Core.inheritPrototype(MyGame_1, Scene);
+gEngine.Core.inheritPrototype(MyGame, Scene);
 
-MyGame_1.prototype.initialize = function () {
+MyGame.prototype.initialize = function () {
     // Step A: set up the cameras
     this.mCamera = new Camera(
             vec2.fromValues(0, 0), // position of the camera
@@ -71,19 +71,19 @@ MyGame_1.prototype.initialize = function () {
 };
 
 
-MyGame_1.prototype.loadScene = function () {
+MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kMinionSprite);
     gEngine.Textures.loadTexture(this.kPlatformSprite);
 };
 
-MyGame_1.prototype.unloadScene = function () {
+MyGame.prototype.unloadScene = function () {
     gEngine.Textures.loadTexture(this.kMinionSprite);
     gEngine.Textures.loadTexture(this.kPlatformSprite);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
 // importantly, make sure to _NOT_ change any state.
-MyGame_1.prototype.draw = function () {
+MyGame.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
     this.mCamera.setupViewProjection();
@@ -101,7 +101,7 @@ MyGame_1.prototype.draw = function () {
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
-MyGame_1.prototype.update = function () {
+MyGame.prototype.update = function () {
 
     // Create more platforms
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
@@ -130,7 +130,7 @@ MyGame_1.prototype.update = function () {
     gUpdateFrame();
 };
 
-MyGame_1.prototype.collideReaction = function (objA, objB) {
+MyGame.prototype.collideReaction = function (objA, objB) {
     var h = [];
     if (objA.pixelTouches(objB, h)) {
         objA.mDyePack.setColor([1, 0, 0, 1]);
