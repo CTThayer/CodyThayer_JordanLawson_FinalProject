@@ -113,7 +113,7 @@ MyGame.prototype.update = function () {
         this.mQuadTreeMode = !this.mQuadTreeMode;
         
         if(this.mQuadTree === null){
-            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 4, 10);
+            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 8, 10);
             var i = 0;
             for(i = 0; i < this.mPlatformArray.length; i++){
                 this.mQuadTree.insert(this.mPlatformArray[i]);
