@@ -32,10 +32,9 @@ QNode.prototype.split = function() {
     // Move objects from parent node into child nodes, then clear parent objects array
     var count = this.objects.length;
     for(var i = 0; i < count; i++) {
-        var objBounds = this._getObjectBounds(this.objects[i]);
-        var quads = this.getQuadrants(objBounds);
+        var quads = this.getQuadrants(this.objects[i]);
         for(var j = 0; j < quads.length; j++) {
-            this.nodes[j].objects.push(this.objects[i]);
+            this.nodes[j].push(this.objects[i]);
         }
     }
     this.objects = [];
@@ -56,11 +55,19 @@ QNode.prototype.getQuadrants = function(region) {
     else {
         var quadrants = [];
         for(var i = 0; i < 4; i++) {
-            if(this.nodes[i].testBounds(region)) {
-                quadrants.push(i);
+            if(this.nodes[0].testBounds(region)) {
+                quadrants.push(0);
+            }
+            if(this.nodes[1].testBounds(region)) {
+                quadrants.push(1);
+            }
+            if(this.nodes[2].testBounds(region)) {
+                quadrants.push(2);
+            }
+            if(this.nodes[3].testBounds(region)) {
+                quadrants.push(3);
             }
         }
-        return quadrants;
     }
 };
 
@@ -72,13 +79,4 @@ QNode.prototype.clear = function() {
         this.nodes[3].clear();
     }
     delete this;
-};
-
-QNode.prototype._getObjectBounds = function(object) {
-    var minX = object.getXform().getXPos() - (object.getXform().getWidth() / 2);
-    var maxX = object.getXform().getXPos() + (object.getXform().getWidth() / 2);
-    var minY = object.getXform().getYPos() - (object.getXform().getHeight() / 2);
-    var maxY = object.getXform().getYPos() + (object.getXform().getHeight() / 2);
-    var bounds = [minX, maxX, minY, maxY];
-    return bounds;
 };
