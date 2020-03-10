@@ -62,8 +62,6 @@ function Patrol(texture1, texture2, outlineTexture, initPos, wcbounds) {
     // Boolean that marks the item for deletion
     this.deleteCheck = false;
     
-    this.type = "Patrol";
-    
     // Initialize gameObject with  spriteAnimateRenderable
     GameObject.call(this, this.mTopWing);
     GameObject.call(this, this.mBotWing);
