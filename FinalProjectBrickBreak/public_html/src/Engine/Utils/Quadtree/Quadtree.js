@@ -17,7 +17,8 @@ Quadtree.prototype.insert = function(object) {
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
     // Pass _insertHelper method so it can be called at correct insert locations
-    this._traversalHelper(this.root, object, oBounds, 0, null, this._insertHelper);
+    let _insert = this._insertHelper.bind(this);
+    this._traversalHelper(this.root, object, oBounds, 0, null, _insert);
 };
 
 Quadtree.prototype.remove = function(object) {
@@ -26,7 +27,8 @@ Quadtree.prototype.remove = function(object) {
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
     // Pass _insertHelper method so it can be called at correct insert locations
-    this._traversalHelper(this.root, object, oBounds, 0, null, this._removeHelper);
+    let remove = this._removeHelper.bind(this);
+    this._traversalHelper(this.root, object, oBounds, 0, null, remove);
 };
 
 Quadtree.prototype.getObjectsNear = function(object) {
@@ -41,7 +43,8 @@ Quadtree.prototype.getObjectsNear = function(object) {
     
     // Use _traversalHelper method to recursively get to the object in the tree node(s)
     // Pass _getObjectsHelper method so other objects in the node(s) can be fetched
-    this._traversalHelper(this.root, object, oBounds, 0, results, this._getObjectsHelper);
+    let _getObjectsNear = this._getObjectsHelper.bind(this);
+    this._traversalHelper(this.root, object, oBounds, 0, results, _getObjectsNear);
     
     return results;
 };
@@ -59,7 +62,8 @@ Quadtree.prototype._traversalHelper = function(node, object, objBounds, d, out, 
         if (node.nodes.length == 4) {
             var quads = node.getQuadrants(objBounds);
             for(var i = 0; i < quads.length; i++) {
-                this._traversalHelper(node.nodes[i], object, objBounds, depth, func);
+                //let _traverse = this._traversalHelper.bind(this);
+                this._traversalHelper(node.nodes[i], object, objBounds, depth, out, func);
             }
         }
         if (node.nodes.length == 0 && node.testBounds(objBounds)) {
@@ -104,6 +108,10 @@ Quadtree.prototype._calcObjectBounds = function(object) {
     var minX = object.getXform().getXPos() - (object.getXform().getWidth() / 2);
     var maxX = object.getXform().getXPos() + (object.getXform().getWidth() / 2);
     var minY = object.getXform().getYPos() - (object.getXform().getHeight() / 2);
-    var maxY = object.getXform().getYPos() - (object.getXform().getHeight() / 2);
-    return [minX, maxX, minY, maxY];
+    var maxY = object.getXform().getYPos() + (object.getXform().getHeight() / 2);
+    var bounds = [minX, maxX, minY, maxY];
+    return bounds;
 };
+
+Quadtree.prototype.getMaxObjsPerNode = function() { return this.maxObjects; };
+Quadtree.prototype.getMaxDepth = function() { return this.maxDepth; };

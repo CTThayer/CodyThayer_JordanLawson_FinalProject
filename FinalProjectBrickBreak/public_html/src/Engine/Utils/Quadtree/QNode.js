@@ -32,9 +32,10 @@ QNode.prototype.split = function() {
     // Move objects from parent node into child nodes, then clear parent objects array
     var count = this.objects.length;
     for(var i = 0; i < count; i++) {
-        var quads = this.getQuadrants(this.objects[i]);
+        var objBounds = this._getObjectBounds(this.objects[i]);
+        var quads = this.getQuadrants(objBounds);
         for(var j = 0; j < quads.length; j++) {
-            this.nodes[j].push(this.objects[i]);
+            this.nodes[quads[j]].objects.push(this.objects[i]);
         }
     }
     this.objects = [];
@@ -55,19 +56,11 @@ QNode.prototype.getQuadrants = function(region) {
     else {
         var quadrants = [];
         for(var i = 0; i < 4; i++) {
-            if(this.nodes[0].testBounds(region)) {
-                quadrants.push(0);
-            }
-            if(this.nodes[1].testBounds(region)) {
-                quadrants.push(1);
-            }
-            if(this.nodes[2].testBounds(region)) {
-                quadrants.push(2);
-            }
-            if(this.nodes[3].testBounds(region)) {
-                quadrants.push(3);
+            if(this.nodes[i].testBounds(region)) {
+                quadrants.push(i);
             }
         }
+        return quadrants;
     }
 };
 
