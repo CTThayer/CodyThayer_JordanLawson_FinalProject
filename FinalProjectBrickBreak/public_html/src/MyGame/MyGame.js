@@ -18,15 +18,8 @@ function MyGame() {
 
     // The camera to view the scene
     this.mCamera = null;
-    this.mDyePack1 = null;
-    this.mDyePack2 = null;
-    this.mDyePack3 = null;
-
-    this.mPlatform = null;
-    this.mPlatformArray = [];
-
-    this.mQuadTree = null;
-    this.mQuadTreeMode = false;
+    this.mObjectManager = null;
+    this.mObjectArray = [];
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -40,28 +33,15 @@ MyGame.prototype.initialize = function () {
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     // sets the background to gray
 
-    this.mPlatform = null;
-    var i;
-    for (i = 0; i < 10; i++) {
-        this.mPlatform = new Platform(this.kPlatformSprite, [0, 0]);
-        this.mPlatformArray.push(this.mPlatform);
+    
+    
+
+    for (var i = 0; i < 20; i++) {
+        var dyePack = new DyePack(this.kMinionSprite);
+        this.mObjectArray.push(dyePack);
     }
-
-    this.mDyePack1 = new DyePack(this.kMinionSprite, this.mPlatformArray);
-    this.mDyePack2 = new DyePack(this.kMinionSprite, this.mPlatformArray);
-    this.mDyePack3 = new DyePack(this.kMinionSprite, this.mPlatformArray);
-
-    this.mPlatformArray[1].mPlatform.getXform().setPosition(0, 50);
-    this.mPlatformArray[2].mPlatform.getXform().setPosition(0, -50);
-    this.mPlatformArray[3].mPlatform.getXform().setPosition(50, 50);
-    this.mPlatformArray[4].mPlatform.getXform().setPosition(50, -50);
-    this.mPlatformArray[5].mPlatform.getXform().setPosition(-50, 50);
-    this.mPlatformArray[6].mPlatform.getXform().setPosition(-50, -50);
-    this.mPlatformArray[7].mPlatform.getXform().setPosition(-50, 0);
-    this.mPlatformArray[8].mPlatform.getXform().setPosition(50, 0);
-
-    this.mPlatform = null;
-
+    
+    this.mObjectManager = new ObjectManager(this.mObjectArray, this.kMinionSprite);
 };
 
 
@@ -81,147 +61,14 @@ MyGame.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
     this.mCamera.setupViewProjection();
-
-    this.mDyePack1.draw(this.mCamera);
-    this.mDyePack2.draw(this.mCamera);
-    this.mDyePack3.draw(this.mCamera);
-
-    var i;
-    for (i = 0; i < this.mPlatformArray.length; i++) {
-        this.mPlatformArray[i].draw(this.mCamera);
-    }
-
+    
+    this.mObjectManager.draw(this.mCamera);
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
 
-     // Check for platform collisions
-     var skip1 = false;
-     var skip2 = false;
-     var skip3 = false;
-
-    // Create more platforms
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        var newPlatform = new Platform(this.kPlatformSprite, [Math.random() * (75 - (-75)) + (-75), Math.random() * (100 - (-100)) + (-100)]);
-        this.mPlatformArray.push(newPlatform);
-    }
-
-    // Change to QuadTree
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Q)) {
-        this.mQuadTreeMode = !this.mQuadTreeMode;
-        
-        if(this.mQuadTree === null){
-            this.mQuadTree = new Quadtree([-100, 100, -75, 75], 4, 10);
-            var i = 0;
-            for(i = 0; i < this.mPlatformArray.length; i++){
-                this.mQuadTree.insert(this.mPlatformArray[i]);
-            }
-            this.mQuadTree.insert(this.mDyePack1);
-            this.mQuadTree.insert(this.mDyePack2);
-            this.mQuadTree.insert(this.mDyePack3);
-        } else this.mQuadTree = null;
-    }
-
-    if (this.mQuadTreeMode){
-        var objects = [];
-        objects = this.mQuadTree.getObjectsNear(this.mDyePack1);
-        objects = Array.from(objects);
-        
-        var i = 0;
-        for(i = 0; i < objects.length; i++){
-            var h = [];
-            
-            if (this.mDyePack1 !== objects[i] && this.mDyePack1.pixelTouches(objects[i], h)) {
-                this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-                break;
-            } else {
-                this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
-            }
-        }
-        
-        objects = this.mQuadTree.getObjectsNear(this.mDyePack2);
-        objects = Array.from(objects);
-        
-        var i = 0;
-        for(i = 0; i < objects.length; i++){
-            var h = [];
-            
-            if (this.mDyePack2 !== objects[i] && this.mDyePack2.pixelTouches(objects[i], h)) {
-                this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-                break;
-            } else {
-                this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
-            }
-        }
-        
-        objects = this.mQuadTree.getObjectsNear(this.mDyePack3);
-        objects = Array.from(objects);
-        
-        var i = 0;
-        for(i = 0; i < objects.length; i++){
-            var h = [];
-            
-            if (this.mDyePack3 !== objects[i] && this.mDyePack3.pixelTouches(objects[i], h)) {
-                this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-                break;
-            } else if (!skip3) {
-                this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
-            }
-        }
-    }
-
-    if (!this.mQuadTreeMode) {
-
-        var i = 0;
-        for (i = 0; i < this.mPlatformArray.length; i++) {
-            var h = [];
-            if (this.mDyePack1.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-                skip1 = true;
-            } else if (!skip1) {
-                this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
-            }
-            if (this.mDyePack2.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-                skip2 = true;
-            } else if (!skip2) {
-                this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
-            }
-            if (this.mDyePack3.pixelTouches(this.mPlatformArray[i], h)) {
-                this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-                skip3 = true;
-            } else if (!skip3) {
-                this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
-            }
-        }
-        var h = [];
-        if (this.mDyePack1.pixelTouches(this.mDyePack2, h) || this.mDyePack1.pixelTouches(this.mDyePack3, h)) {
-            this.mDyePack1.mDyePack.setColor([1, 0, 0, 1]);
-            skip1 = true;
-        } else if (!skip1) {
-            this.mDyePack1.mDyePack.setColor([0, 0, 0, 0]);
-        }
-
-        if (this.mDyePack2.pixelTouches(this.mDyePack1, h) || this.mDyePack1.pixelTouches(this.mDyePack3, h)) {
-            this.mDyePack2.mDyePack.setColor([1, 0, 0, 1]);
-            skip2 = true;
-        } else if (!skip2) {
-            this.mDyePack2.mDyePack.setColor([0, 0, 0, 0]);
-        }
-
-        if (this.mDyePack3.pixelTouches(this.mDyePack1, h) || this.mDyePack1.pixelTouches(this.mDyePack2, h)) {
-            this.mDyePack3.mDyePack.setColor([1, 0, 0, 1]);
-            skip3 = true;
-        } else if (!skip3) {
-            this.mDyePack3.mDyePack.setColor([0, 0, 0, 0]);
-        }
-    }
-
-    this.mDyePack1.update();
-    this.mDyePack2.update();
-    this.mDyePack3.update();
-
+    this.mObjectManager.update();
     gUpdateFrame();
 };

@@ -18,4 +18,9 @@ function Platform(texture, position) {
                                 // show each element for mAnimSpeed updates
     GameObject.call(this, this.mPlatform);
 }
+
+Platform.prototype.setColor = function (color){
+    this.mPlatform.setColor(color);
+};
+
 gEngine.Core.inheritPrototype(Platform, GameObject);

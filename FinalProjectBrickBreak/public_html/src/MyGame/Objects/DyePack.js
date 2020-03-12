@@ -9,7 +9,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function DyePack(spriteTexture, platformArray, dyePackArray) {
+function DyePack(spriteTexture) {
     this.kRefWidth = 80;
     this.kRefHeight = 130;
     this.kDelta;
@@ -17,10 +17,6 @@ function DyePack(spriteTexture, platformArray, dyePackArray) {
     this.vX;
     this.vY;
 
-    
-    this.platformArray = platformArray;
-
-    
     this.mDyePack = new SpriteRenderable(spriteTexture);
     this.mDyePack.setColor([1, 1, 1, 0.1]);
     this.mDyePack.getXform().setSize(4, 4);
@@ -37,9 +33,12 @@ DyePack.prototype.changeMovement = function () {
     this.vY = this.kDelta * Math.sin(this.kDirection);
 };
 
+DyePack.prototype.setColor = function (color){
+    this.mDyePack.setColor(color);
+};
+
 DyePack.prototype.update = function () {
     var xform = this.getXform();
-    var i;
     
     // Check for wall collisions
     if(xform.getXPos() > 98 || xform.getXPos() < -98){
@@ -49,11 +48,6 @@ DyePack.prototype.update = function () {
     if(xform.getYPos() > 73 || xform.getYPos() < -73){
         this.vY *= -1;
     }
-    
-
-    
-    
-    // Check for dyepack collisions
     
     xform.incXPosBy(this.vX);
     xform.incYPosBy(this.vY);
