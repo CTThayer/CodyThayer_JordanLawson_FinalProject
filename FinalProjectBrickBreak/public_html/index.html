@@ -79,12 +79,20 @@
         
         <br>
         <div id='UpdateFrame'></div>
+        <div id='UpdateObjects'></div>
         <hr>
         <script>
             var gUpdateFrame = function(elapsed) {
                 var elm = document.getElementById("UpdateFrame");
                 elm.innerHTML =
                     "<b>Frames per second: </b>" + (1000/elapsed).toFixed(2) + "<br>";
+            };
+        </script>
+        <script>
+            var gUpdateObjects = function(objects) {
+                var elm = document.getElementById("UpdateObjects");
+                elm.innerHTML =
+                    "<b>Number of Objects </b>" + objects + "<br>";
             };
         </script>
     </body>

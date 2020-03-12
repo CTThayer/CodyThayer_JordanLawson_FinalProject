@@ -70,5 +70,5 @@ MyGame.prototype.draw = function () {
 MyGame.prototype.update = function () {
 
     this.mObjectManager.update();
-    gUpdateFrame();
+    gUpdateObjects(this.mObjectArray.length);
 };

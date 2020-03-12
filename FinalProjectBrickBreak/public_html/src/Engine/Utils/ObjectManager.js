@@ -56,9 +56,9 @@ ObjectManager.prototype.collisionCheck = function () {
             
             var object1 = this.objectArray[i];
             var object2 = this.objectArray[j];
-            var check = object1.pixelTouches[object2, h];
+            //var check = object1.pixelTouches[object2, h];
             
-            if(this.objectArray[i].pixelTouches[this.objectArray[j], h]){
+            if(this.objectArray[i].pixelTouches(this.objectArray[j], h)){
                 this.objectArray[i].mDyePack.setColor([1,0,0,1]);
                 this.objectArray[j].mDyePack.setColor([1,0,0,1]);
             }
