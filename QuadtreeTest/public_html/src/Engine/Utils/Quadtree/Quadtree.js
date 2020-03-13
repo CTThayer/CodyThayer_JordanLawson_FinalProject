@@ -33,7 +33,7 @@ Quadtree.prototype.remove = function(object) {
 
 Quadtree.prototype.getObjectsNear = function(object) {
     // Create an array or set to store the nearby objects in
-    // Using set eliminates the need to cull duplicates in the output array
+    // Using set eliminates the need to cull duplicates isn the output array
 //  var results = [];           // use if out is an array
     var results = new Set();    // use if out is a set
 
@@ -64,7 +64,7 @@ Quadtree.prototype._traversalHelper = function(node, object, objBounds, d, out, 
             var quads = node.getQuadrants(objBounds);
             for(var i = 0; i < quads.length; i++) {
                 //let _traverse = this._traversalHelper.bind(this);
-                this._traversalHelper(node.nodes[i], object, objBounds, depth, out, func);
+                this._traversalHelper(node.nodes[quads[i]], object, objBounds, depth, out, func);
             }
         }
         if (node.nodes.length == 0 && node.testBounds(objBounds)) {
