@@ -9,6 +9,9 @@ function Quadtree(maxBounds, maxObjs, maxDepth) {
     this.root = new QNode(maxBounds);
     this.maxObjects = maxObjs;
     this.maxDepth = maxDepth;
+    
+    this.maxBounds = maxBounds
+    this.quadLines = [];
 };
 
 Quadtree.prototype.insert = function(object) {
@@ -33,7 +36,7 @@ Quadtree.prototype.remove = function(object) {
 
 Quadtree.prototype.getObjectsNear = function(object) {
     // Create an array or set to store the nearby objects in
-    // Using set eliminates the need to cull duplicates in the output array
+    // Using set eliminates the need to cull duplicates isn the output array
 //  var results = [];           // use if out is an array
     var results = new Set();    // use if out is a set
 
@@ -51,6 +54,29 @@ Quadtree.prototype.getObjectsNear = function(object) {
 
 Quadtree.prototype.clear = function() {
     this.root.clear();
+    this.root = new QNode(this.maxBounds);
+};
+
+Quadtree.prototype.getQuadLines = function() {
+    
+    if (this.root === null || this.root.bounds === null) {
+        console.log("ERROR: Invalid Root Node");
+        return [];
+    }
+    
+    // Create outermost border
+    var top = new LineRenderable(this.root.bounds[0], this.root.bounds[3], this.root.bounds[1], this.root.bounds[3]);
+    var bottom = new LineRenderable(this.root.bounds[0], this.root.bounds[2], this.root.bounds[1], this.root.bounds[2]);
+    var left = new LineRenderable(this.root.bounds[0], this.root.bounds[2], this.root.bounds[0], this.root.bounds[3]);
+    var right = new LineRenderable(this.root.bounds[1], this.root.bounds[2], this.root.bounds[1], this.root.bounds[3]);
+    this.quadLines.push(top);
+    this.quadLines.push(bottom);
+    this.quadLines.push(left);
+    this.quadLines.push(right);
+    
+    // Does NOT use _traversalHelper() because it needs a different type of
+    // traversal in order to ensure ALL node borders are drawn
+    this._linesHelper(this.root, -1, this.quadLines);
 };
 
 /****************************** Private Methods *******************************/
@@ -63,7 +89,7 @@ Quadtree.prototype._traversalHelper = function(node, object, objBounds, d, out, 
             var quads = node.getQuadrants(objBounds);
             for(var i = 0; i < quads.length; i++) {
                 //let _traverse = this._traversalHelper.bind(this);
-                this._traversalHelper(node.nodes[i], object, objBounds, depth, out, func);
+                this._traversalHelper(node.nodes[quads[i]], object, objBounds, depth, out, func);
             }
         }
         if (node.nodes.length == 0 && node.testBounds(objBounds)) {
@@ -98,7 +124,7 @@ Quadtree.prototype._getObjectsHelper = function(node, object, depth, out) {
     if (node.objects != null) {
         for(var i = 0; i < node.objects.length; i++) {
 //          out.push(node.objects[i]);  // use if out is an array
-            out.add(node.objects[i]);   // us if out is a set
+            out.add(node.objects[i]);   // use if out is a set
         }
     }
 };
@@ -112,6 +138,28 @@ Quadtree.prototype._calcObjectBounds = function(object) {
     var bounds = [minX, maxX, minY, maxY];
     return bounds;
 };
+
+Quadtree.prototype._linesHelper = function(node, quadrant, lineArray) {
+    if (node !== null) {
+        if (node.nodes.length === 4) {
+            for(var i = 0; i < 4; i++) {
+                this._drawHelper(node.nodes[i], i, lineArray);
+                if (i === 0) {
+                    
+                }
+            }
+                var top = new LineRenderable(node.bounds[0], node.bounds[3], node.bounds[1], node.bounds[3]);
+                var bottom = new LineRenderable(node.bounds[0], node.bounds[2], node.bounds[1], node.bounds[2]);
+                var left = new LineRenderable(node.bounds[0], node.bounds[2], node.bounds[0], node.bounds[3]);
+                var right = new LineRenderable(node.bounds[1], node.bounds[2], node.bounds[1], node.bounds[3]);
+                lineArray.push(top);
+                lineArray.push(bottom);
+                lineArray.push(left);
+                lineArray.push(right);
+        }
+    }
+};
+
 
 Quadtree.prototype.getMaxObjsPerNode = function() { return this.maxObjects; };
 Quadtree.prototype.getMaxDepth = function() { return this.maxDepth; };
