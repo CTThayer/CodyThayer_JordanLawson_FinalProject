@@ -26,7 +26,8 @@ function MyGame() {
     this.mCursor = null;
     //this.mCursor = new TextureRenderable(this.kBoundTexture);
     
-    this.mObjectManager = null;
+    this.objsNearby = [];
+    this.originalColors = [];
     
     this.borderLines = [];
     this.borderLinesActive = false;
@@ -91,6 +92,10 @@ MyGame.prototype.initialize = function () {
     this.mCursor.getXform().setSize(8, 8);
     this.mCursor.getXform().setPosition(0,0);
     this.mCursor.setColor([0.2, 0.4, 0.8, 0.5]);
+    
+    // Set up spacebar highlight nearby objects functionality
+    // Assign callback function for spacebar
+    gEngine.Input.setKeyReleaseCallback(gEngine.Input.keys.Space, this._SpacebarCallback, this);
     
 };
 
@@ -192,22 +197,19 @@ MyGame.prototype.update = function () {
     //      - Get nearby objects from Quadtree 
     //      - Set color of objects
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        var objsNearby = this.mQuadtree.getObjectsNear(this.mCursor);
-        var iterator = objsNearby.values();
-        for (let entry of iterator) {
-            entry.setColor([1, 1, 1, 0.1]);
+        var objs = this.mQuadtree.getObjectsNear(this.mCursor);
+        this.objsNearby = Array.from(objs);
+        for (var i = 0; i < this.objsNearby.length; i++) {
+            this.originalColors[i] = this.objsNearby[i].getColor();
+            this.objsNearby[i].setColor([1, 1, 1, 0.1]);
         }
-        console.log("Nearby Objects: ");
-        console.log(objsNearby);
-        
-        console.log("Current Quadtree: ");
-        console.log(this.mQuadtree);
     }
     
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.L)) {
-        console.log("L-Key Pressed: Activating borderLines, calling getQuadLines()");
-        this.borderLinesActive = true;
-        this.borderLines = this.mQuadtree.getQuadLines();
+        this.borderLinesActive = !this.borderLinesActive;
+        if (this.borderLinesActive) {
+            this.borderLines = this.mQuadtree.getQuadLines();
+        }
     }
 
 };
@@ -219,4 +221,14 @@ MyGame.prototype.updateQuadtree = function () {
         this.mQuadtree.insert(this.mObjectArray[i]);
     }
     
+};
+
+MyGame.prototype._SpacebarCallback = function() {
+    if (this.objsNearby.length === this.originalColors.length) {
+        for (var i = 0; i < this.objsNearby.length; i++) {
+            this.objsNearby[i].setColor(this.originalColors[i]);
+        }
+    }
+    this.objsNearby = [];
+    this.originalColors = [];
 };

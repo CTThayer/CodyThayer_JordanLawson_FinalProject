@@ -78,6 +78,9 @@ gEngine.Input = (function () {
     var mIsKeyPressed = [];
     // Click events: once an event is set, it will remain there until polled
     var mIsKeyClicked = [];
+    
+    // Key Release Callbacks
+    var mOnKeyRelease = [];
 
 
     // Support mouse
@@ -95,6 +98,11 @@ gEngine.Input = (function () {
     };
     var _onKeyUp = function (event) {
         mIsKeyPressed[event.keyCode] = false;
+        
+        if (typeof mOnKeyRelease[event.keyCode] !== "undefined") {
+            var callback = mOnKeyRelease[event.keyCode];
+            callback();
+        };
     };
     //</editor-fold>
 
@@ -174,6 +182,13 @@ gEngine.Input = (function () {
     var isKeyClicked = function (keyCode) {
         return (mIsKeyClicked[keyCode]);
     };
+    
+    
+    var setKeyReleaseCallback = function (keycode, func, obj) {
+        var callback = func.bind(obj);
+        mOnKeyRelease[keycode] = callback;
+    };
+    
 
     var isButtonPressed = function (button) {
         return mIsButtonPressed[button];
@@ -192,6 +207,7 @@ gEngine.Input = (function () {
         // keyboard support
         isKeyPressed: isKeyPressed,
         isKeyClicked: isKeyClicked,
+        setKeyReleaseCallback: setKeyReleaseCallback,
         keys: kKeys,
 
         // Mouse support
