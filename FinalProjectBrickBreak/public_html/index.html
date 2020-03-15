@@ -80,6 +80,7 @@
         <br>
         <div id='UpdateFrame'></div>
         <div id='UpdateObjects'></div>
+        <div>Q: Turn On/Off QuadTree, Space: Spawn More DyePacks, Z: Turn On/Off Quadrant Visualization</div>
         <hr>
         <script>
             var num = 10;
@@ -102,10 +103,10 @@
             };
         </script>
         <script>
-            var gUpdateObjects = function(objects) {
+            var gUpdateObjects = function(objects, mode) {
                 var elm = document.getElementById("UpdateObjects");
                 elm.innerHTML =
-                    "<b>Number of Objects </b>" + objects + "<br>";
+                    "<b>QuadTree Mode: </b>" + mode + " <b>Number of Objects </b>" + objects + "<br>";
             };
         </script>
     </body>

@@ -44,7 +44,7 @@ QNode.prototype.split = function() {
 QNode.prototype.testBounds = function(otherBounds) {
     if( this.bounds[0] < otherBounds[1] &&   // nodeMinX < otherMaxX
         this.bounds[1] > otherBounds[0] &&   // nodeMaxX > otherMinX
-        this.bounds[2] < otherBounds[3] &&   // nodeMinY > otherMaxY
+        this.bounds[2] < otherBounds[3] &&   // nodeMinY < otherMaxY
         this.bounds[3] > otherBounds[2] ) {  // nodeMaxY > otherMinY
             return true;
     } else {return false;}
@@ -65,11 +65,20 @@ QNode.prototype.getQuadrants = function(region) {
 };
 
 QNode.prototype.clear = function() {
-    if(this.nodes != null) {
+    if(this.nodes.length > 0) {
         this.nodes[0].clear();
         this.nodes[1].clear();
         this.nodes[2].clear();
         this.nodes[3].clear();
     }
     delete this;
+};
+
+QNode.prototype._getObjectBounds = function(object) {
+    var minX = object.getXform().getXPos() - (object.getXform().getWidth() / 2);
+    var maxX = object.getXform().getXPos() + (object.getXform().getWidth() / 2);
+    var minY = object.getXform().getYPos() - (object.getXform().getHeight() / 2);
+    var maxY = object.getXform().getYPos() + (object.getXform().getHeight() / 2);
+    var bounds = [minX, maxX, minY, maxY];
+    return bounds;
 };
