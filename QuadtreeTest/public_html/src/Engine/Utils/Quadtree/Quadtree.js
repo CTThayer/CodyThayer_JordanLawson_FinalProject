@@ -58,12 +58,13 @@ Quadtree.prototype.clear = function() {
 
 Quadtree.prototype.getQuadLines = function() {
     
+    // If root is null or uninitialized, log an error and return an empty array;
     if (this.root === null || this.root.bounds === null) {
         console.log("ERROR: Invalid Root Node");
         return [];
     }
     
-    // Create outermost border
+    // Create outermost border around root node
     var top = new LineRenderable(this.root.bounds[0], this.root.bounds[3], this.root.bounds[1], this.root.bounds[3]);
     var bottom = new LineRenderable(this.root.bounds[0], this.root.bounds[2], this.root.bounds[1], this.root.bounds[2]);
     var left = new LineRenderable(this.root.bounds[0], this.root.bounds[2], this.root.bounds[0], this.root.bounds[3]);
@@ -73,9 +74,10 @@ Quadtree.prototype.getQuadLines = function() {
     this.quadLines.push(left);
     this.quadLines.push(right);
     
+    // Uses _lineHelper() for taversal and remaining line creation.
     // Does NOT use _traversalHelper() because it needs a different type of
-    // traversal in order to ensure ALL node borders are drawn
-    this._linesHelper(this.root, -1, this.quadLines);
+    // traversal to perform the line specific task.
+    this._linesHelper(this.root, this.quadLines);
 };
 
 /****************************** Private Methods *******************************/
@@ -138,23 +140,17 @@ Quadtree.prototype._calcObjectBounds = function(object) {
     return bounds;
 };
 
-Quadtree.prototype._linesHelper = function(node, quadrant, lineArray) {
+Quadtree.prototype._linesHelper = function(node, lineArray) {
     if (node !== null) {
         if (node.nodes.length === 4) {
-            for(var i = 0; i < 4; i++) {
-                this._drawHelper(node.nodes[i], i, lineArray);
-                if (i === 0) {
-                    
-                }
-            }
-                var top = new LineRenderable(node.bounds[0], node.bounds[3], node.bounds[1], node.bounds[3]);
-                var bottom = new LineRenderable(node.bounds[0], node.bounds[2], node.bounds[1], node.bounds[2]);
-                var left = new LineRenderable(node.bounds[0], node.bounds[2], node.bounds[0], node.bounds[3]);
-                var right = new LineRenderable(node.bounds[1], node.bounds[2], node.bounds[1], node.bounds[3]);
-                lineArray.push(top);
-                lineArray.push(bottom);
-                lineArray.push(left);
-                lineArray.push(right);
+            this._drawHelper(node.nodes[0], lineArray);
+            this._drawHelper(node.nodes[1], lineArray);
+            this._drawHelper(node.nodes[2], lineArray);
+            this._drawHelper(node.nodes[3], lineArray);
+            var midX = node.nodes[0].bounds[0];
+            var midY = node.nodes[0].bounds[2];
+            var vertical = new LineRenderable(midX, node.bounds[2], midX, node.bounds[3]);
+            var horizontal = new LineRenderable(node.bounds[0], midY, node.bounds[1], midY);
         }
     }
 };
