@@ -27,6 +27,9 @@ function MyGame() {
     //this.mCursor = new TextureRenderable(this.kBoundTexture);
     
     this.mObjectManager = null;
+    
+    this.borderLines = [];
+    this.borderLinesActive = false;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -117,8 +120,12 @@ MyGame.prototype.draw = function () {
     // draw cursor
     this.mCursor.draw(this.mCamera);
     
-    // Call mObjectManager's draw to draw all the registered objects
-//    this.mObjectManager.draw(this.mCamera);
+    // If borderlines are activated, draw them
+    if(this.borderLinesActive === true) {
+        for (var i = 0; i < this.borderLines.length; i++) {
+            this.borderLines[i].draw(this.mCamera);
+        };
+    }
 
 };
 
@@ -174,6 +181,10 @@ MyGame.prototype.update = function () {
         obj.setColor([0, 0, 0, 1]);
         this.mObjectArray.push(obj);
         this.mQuadtree.insert(obj);
+        
+        if (this.borderLinesActive) {
+            this.borderLines = this.mQuadtree.getQuadLines();
+        }
     }
     
 
@@ -186,14 +197,18 @@ MyGame.prototype.update = function () {
         for (let entry of iterator) {
             entry.setColor([1, 1, 1, 0.1]);
         }
-        console.log("Nearby Objects: ")
+        console.log("Nearby Objects: ");
         console.log(objsNearby);
         
-        console.log("Current Quadtree: ")
+        console.log("Current Quadtree: ");
         console.log(this.mQuadtree);
     }
     
-    
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.L)) {
+        console.log("L-Key Pressed: Activating borderLines, calling getQuadLines()");
+        this.borderLinesActive = true;
+        this.borderLines = this.mQuadtree.getQuadLines();
+    }
 
 };
 
