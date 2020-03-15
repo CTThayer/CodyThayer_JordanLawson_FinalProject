@@ -134,7 +134,7 @@ MyGame.prototype.update = function () {
         if (pos[1] + halfH + this.kDelta < this.WCBounds[3]) {
             var newY = pos[1] + this.kDelta;
         } else {
-            var newY = this.WCBounds[1] + halfH;
+            var newY = this.WCBounds[2] + halfH + this.kDelta;
         }
         this.mCursor.getXform().setPosition(pos[0], newY);
     }
@@ -142,7 +142,7 @@ MyGame.prototype.update = function () {
         if (pos[1] - halfH - this.kDelta > this.WCBounds[2]) {
             var newY = pos[1] - this.kDelta;
         } else {
-            var newY = this.WCBounds[3] - halfH;
+            var newY = this.WCBounds[3] - halfH - this.kDelta;
         }
         this.mCursor.getXform().setPosition(pos[0], newY);
     }
