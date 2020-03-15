@@ -82,10 +82,23 @@
         <div id='UpdateObjects'></div>
         <hr>
         <script>
+            var num = 10;
+            var currCount = 0;
+            var sum = 0;
+            var avg = 0;
             var gUpdateFrame = function(elapsed) {
+                if (currCount < num) {
+                    sum += elapsed;
+                    currCount++;
+                } else if (currCount === num) {
+                    var temp = sum / num;
+                    avg = (1000 / temp).toFixed(2);
+                    sum = 0;
+                    currCount = 0;
+                }
                 var elm = document.getElementById("UpdateFrame");
                 elm.innerHTML =
-                    "<b>Frames per second: </b>" + (1000/elapsed).toFixed(2) + "<br>";
+                    "<b>Frames per second: </b>" + avg + "<br>";
             };
         </script>
         <script>
