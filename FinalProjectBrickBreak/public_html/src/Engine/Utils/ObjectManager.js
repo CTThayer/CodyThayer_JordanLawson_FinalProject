@@ -64,12 +64,12 @@ ObjectManager.prototype.collisionCheck = function () {
 };
 
 ObjectManager.prototype.quadCollisionCheck = function () {
-    for(var i = 0; i < this.objectArray.length; i++){
-        var collisionArray =  Array.from(this.quadTree.getObjectsNear(this.objectArray[i]));
-        
-        for(var j = 0; j < collisionArray.length; j++){
+    for (var i = 0; i < this.objectArray.length; i++) {
+        var collisionArray = Array.from(this.quadTree.getObjectsNear(this.objectArray[i]));
+
+        for (var j = 0; j < collisionArray.length; j++) {
             var h = [];
-            if(this.objectArray[i] !== collisionArray[j] && this.objectArray[i].pixelTouches(collisionArray[j], h)){
+            if (this.objectArray[i] !== collisionArray[j] && this.objectArray[i].pixelTouches(collisionArray[j], h)) {
                 collisionArray[j].mDyePack.setColor([1, 0, 0, 1]);
             }
         }
@@ -91,7 +91,7 @@ ObjectManager.prototype.update = function () {
         if (this.quadTree === null) {
             this.quadTree = new Quadtree([-100, 100, -75, 75], 4, 10);
             this.updateTree();
-        } else{
+        } else {
             this.quadTree = null;
             this.visualization = false;
         }
@@ -108,21 +108,28 @@ ObjectManager.prototype.update = function () {
         this.visualization = !this.visualization;
     }
 
-    if (this.visualization) {
-        var quadrant = this.quadTree.getObjectsNear(this.objectArray[0]);
-        for (var i = 0; i < quadrant.length; i++) {
-            quadrant[i].mDyePack.setColor([0, 1, 0, 1]);
-        }
-    }
+
     for (var i = 0; i < this.objectArray.length; i++) {
         this.objectArray[i].mDyePack.setColor([0, 0, 0, 0]);
         this.objectArray[i].update();
     }
-    
-    if(!this.quadMode)
+
+
+
+    if (!this.quadMode)
         this.collisionCheck();
     else {
         this.updateTree();
         this.quadCollisionCheck();
+    }
+
+    if (this.visualization) {
+        var quadrant = Array.from(this.quadTree.getObjectsNear(this.objectArray[0]));
+        
+        for (var i = 0; i < quadrant.length; i++) {
+            quadrant[i].mDyePack.setColor([0, 1, 0, 1]);
+        }
+        
+        this.objectArray[0].mDyePack.setColor([0, 0, 1, 1])
     }
 };
