@@ -65,13 +65,11 @@ QNode.prototype.getQuadrants = function(bounds) {
 };
 
 QNode.prototype.clear = function() {
-    if(this.nodes > 0) {
-        this.nodes[0].clear();
-        this.nodes[1].clear();
-        this.nodes[2].clear();
-        this.nodes[3].clear();
+    for(var i = 0; i < this.nodes.length; i++){
+        //tempNodes.push(this.nodes[i]);
+        this.nodes[i].clear();
+        this.nodes[i] = null;
     }
-    delete this;
 };
 
 QNode.prototype._getObjectBounds = function(object) {
