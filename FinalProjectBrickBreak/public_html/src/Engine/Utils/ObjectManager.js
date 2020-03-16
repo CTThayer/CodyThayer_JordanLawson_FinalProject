@@ -10,7 +10,7 @@ function ObjectManager(objectArray, texture) {
     this.objectArray = objectArray;
     this.texture = texture;
     this.quadMode = false;
-    this.quadTree = new Quadtree([-100, 100, -75, 75], 8, 10);
+    this.quadTree = new Quadtree([-100, 100, -75, 75], 4, 6);
     this.visualization = false;
     this.borderLinesActive = false;
     this.borderLines = null;
@@ -30,7 +30,7 @@ ObjectManager.prototype.draw = function (camera) {
         this.objectArray[i].draw(camera);
     }
     
-    if (this.borderLinesActive) {
+    if (this.borderLinesActive && this.quadMode) {
         for (var j = 0; j < this.borderLines.length; j++) {
             this.borderLines[j].draw(camera);
         }
