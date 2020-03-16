@@ -41,6 +41,19 @@ QNode.prototype.split = function() {
     this.objects = [];
 };
 
+QNode.prototype.unsplit = function() {
+    var endObjs = new Set();
+    for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < this.nodes[i].objects.length; j++) {
+            endObjs.add(this.nodes[i].objects[j]);
+        }
+        this.nodes[i].objects = [];
+        this.nodes[i] = null;
+    }
+    this.nodes = [];
+    this.objects = Array.from(endObjs);
+};
+
 QNode.prototype.testBounds = function(otherBounds) {
     if( this.bounds[0] < otherBounds[1] &&   // nodeMinX < otherMaxX
         this.bounds[1] > otherBounds[0] &&   // nodeMaxX > otherMinX

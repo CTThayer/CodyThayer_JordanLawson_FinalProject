@@ -80,33 +80,54 @@
         <br>
         <div id='UpdateFrame'></div>
         <div id='UpdateObjects'></div>
-        <div>Q: Turn On/Off QuadTree, Space: Spawn More DyePacks, Z: Turn On/Off Quadrant Visualization</div>
+        <div id='Collisions'></div>
+        <div id='Controls'>Q: Turn On/Off Quadtree Mode<br>Z: Turn On/Off Quadrant Visualization<br>L: Turn On/Off Quadtree Line Visualization<br>Space: Spawn More DyePacks</div>
         <hr>
         <script>
-            var num = 10;
+            var samples = 10;
             var currCount = 0;
-            var sum = 0;
-            var avg = 0;
+            var sumFPS = 0;
+            var avgFPS = 0;
             var gUpdateFrame = function(elapsed) {
-                if (currCount < num) {
-                    sum += elapsed;
+                if (currCount < samples) {
+                    sumFPS += elapsed;
                     currCount++;
-                } else if (currCount === num) {
-                    var temp = sum / num;
-                    avg = (1000 / temp).toFixed(2);
-                    sum = 0;
+                } else if (currCount === samples) {
+                    var temp = sumFPS / samples;
+                    avgFPS = (1000 / temp).toFixed(2);
+                    sumFPS = 0;
                     currCount = 0;
                 }
                 var elm = document.getElementById("UpdateFrame");
                 elm.innerHTML =
-                    "<b>Frames per second: </b>" + avg + "<br>";
+                    "<b>Frames per second: </b>" + avgFPS + "<br>";
             };
         </script>
         <script>
             var gUpdateObjects = function(objects, mode) {
                 var elm = document.getElementById("UpdateObjects");
                 elm.innerHTML =
-                    "<b>QuadTree Mode: </b>" + mode + " <b>Number of Objects </b>" + objects + "<br>";
+                    "<b>QuadTree Mode: </b>" + mode + "<br>" + " <b>Number of Objects </b>" + objects + "<br>";
+            };
+        </script>
+        <script>
+            var sampling = 60;
+            var num = 0;
+            var sumCollisionChecks = 0;
+            var avgCollisionChecks = 0;
+            var gUpdateCollisionCounter = function(collisionChecks) {
+                if (num < sampling) {
+                    sumCollisionChecks += collisionChecks;
+                    num++;
+                } else if (num === sampling) {
+                    var temp = sumCollisionChecks / sampling;
+                    avgCollisionChecks = temp.toFixed(2);
+                    sumCollisionChecks = 0;
+                    num = 0;
+                }
+                var elm = document.getElementById("Collisions");
+                elm.innerHTML =
+                    "<b>Collision Checks (Avg): </b>" + avgCollisionChecks + "<br>";
             };
         </script>
     </body>
