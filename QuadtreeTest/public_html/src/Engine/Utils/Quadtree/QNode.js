@@ -50,13 +50,13 @@ QNode.prototype.testBounds = function(otherBounds) {
     } else {return false;}
 };
 
-QNode.prototype.getQuadrants = function(region) {
+QNode.prototype.getQuadrants = function(bounds) {
     if (this.nodes.length !== 4)
         return [-1];
     else {
         var quadrants = [];
         for(var i = 0; i < 4; i++) {
-            if(this.nodes[i].testBounds(region)) {
+            if(this.nodes[i].testBounds(bounds)) {
                 quadrants.push(i);
             }
         }

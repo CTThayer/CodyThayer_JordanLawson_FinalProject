@@ -117,14 +117,13 @@ Quadtree.prototype._insertHelper = function(node, object, depth, out) {
     }
 };
 
-// Inserts an object at a specified node and tests whether node should split
-// UNUSED PARAMS: depth, out
+// Removes an object at a specified node and tests whether node should split
+// UNUSED PARAMS: depth
 Quadtree.prototype._removeHelper = function(node, object, depth, out) {
-    if (node.objects !== null) {
-        var index = node.objects.indexOf(object);
-        if (index !== -1){
-            node.objects[index];
-        }
+    var index = node.objects.indexOf(object);
+    if (index !== -1){
+        var obj = node.objects.splice(index, 1);
+        out.add(obj);
     }
 };
 
