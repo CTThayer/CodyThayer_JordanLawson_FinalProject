@@ -11,6 +11,11 @@ function Quadtree(maxBounds, maxObjs, maxDepth) {
     this.maxDepth = maxDepth;
     
     this.quadLines = [];
+    
+    // Setup bound functions for passing as parameters
+    this._insert = this._insertHelper.bind(this);
+    this._remove = this._removeHelper.bind(this);
+    this._getObjectsNear = this._getObjectsHelper.bind(this);
 };
 
 Quadtree.prototype.insert = function(object) {
@@ -19,8 +24,7 @@ Quadtree.prototype.insert = function(object) {
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
     // Pass _insertHelper method so it can be called at correct insert locations
-    let _insert = this._insertHelper.bind(this);
-    this._traversalHelper(this.root, object, oBounds, 0, null, _insert);
+    this._traversalHelper(this.root, object, oBounds, 0, null, this._insert);
 };
 
 Quadtree.prototype.remove = function(object) {
@@ -28,15 +32,14 @@ Quadtree.prototype.remove = function(object) {
     var oBounds = this._calcObjectBounds(object);
     
     // Use _traversalHelper method test objectBounds against tree nodes recursively
-    // Pass _insertHelper method so it can be called at correct insert locations
-    let remove = this._removeHelper.bind(this);
-    this._traversalHelper(this.root, object, oBounds, 0, null, remove);
+    // Pass _removeHelper method so it can be called at correct remove locations
+    this._traversalHelper(this.root, object, oBounds, 0, null, this._remove);
 };
 
 Quadtree.prototype.getObjectsNear = function(object) {
     // Create an array or set to store the nearby objects in
     // Using set eliminates the need to cull duplicates isn the output array
-//  var results = [];           // use if out is an array
+    //  var results = [];           // use if out is an array
     var results = new Set();    // use if out is a set
 
     
@@ -45,8 +48,7 @@ Quadtree.prototype.getObjectsNear = function(object) {
     
     // Use _traversalHelper method to recursively get to the object in the tree node(s)
     // Pass _getObjectsHelper method so other objects in the node(s) can be fetched
-    let _getObjectsNear = this._getObjectsHelper.bind(this);
-    this._traversalHelper(this.root, object, oBounds, 0, results, _getObjectsNear);
+    this._traversalHelper(this.root, object, oBounds, 0, results, this._getObjectsNear);
     
     return results;
 };
