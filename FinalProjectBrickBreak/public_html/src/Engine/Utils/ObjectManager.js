@@ -14,6 +14,8 @@ function ObjectManager(objectArray, texture) {
     this.visualization = false;
     this.borderLinesActive = false;
     this.borderLines = null;
+    
+    this.numCollisionTests = 0;
 };
 
 ObjectManager.prototype.addObject = function (object) {
@@ -48,15 +50,14 @@ ObjectManager.prototype.updateTree = function () {
 };
 
 ObjectManager.prototype.collisionCheck = function () {
-
     for (var i = 0; i < this.objectArray.length; i++) {
         for (var j = i + 1; j < this.objectArray.length; j++) {
             var h = [];
-
             if (this.objectArray[i].pixelTouches(this.objectArray[j], h)) {
                 this.objectArray[i].setColor([1, 0, 0, 1]);
                 this.objectArray[j].setColor([1, 0, 0, 1]);
             }
+            this.numCollisionTests++;
         }
     }
 };
@@ -64,12 +65,12 @@ ObjectManager.prototype.collisionCheck = function () {
 ObjectManager.prototype.quadCollisionCheck = function () {
     for (var i = 0; i < this.objectArray.length; i++) {
         var collisionArray = Array.from(this.quadTree.getObjectsNear(this.objectArray[i]));
-
         for (var j = 0; j < collisionArray.length; j++) {
             var h = [];
             if (this.objectArray[i] !== collisionArray[j] && this.objectArray[i].pixelTouches(collisionArray[j], h)) {
                 collisionArray[j].setColor([1, 0, 0, 1]);
             }
+            this.numCollisionTests++;
         }
     }
 };
@@ -115,6 +116,10 @@ ObjectManager.prototype.update = function () {
             this.runVisualization();
         }
     }
+    
+    // Output collision test quantities
+    gUpdateCollisionCounter(this.numCollisionTests);
+    this.numCollisionTests = 0;
 };
 
 ObjectManager.prototype.runVisualization = function () {
