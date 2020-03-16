@@ -65,7 +65,7 @@ QNode.prototype.getQuadrants = function(region) {
 };
 
 QNode.prototype.clear = function() {
-    if(this.nodes.length > 0) {
+    if(this.nodes > 0) {
         this.nodes[0].clear();
         this.nodes[1].clear();
         this.nodes[2].clear();

@@ -57,6 +57,9 @@ Quadtree.prototype.clear = function() {
     this.root = new QNode(bounds);
 };
 
+Quadtree.prototype.getMaxObjsPerNode = function() { return this.maxObjects; };
+Quadtree.prototype.getMaxDepth = function() { return this.maxDepth; };
+
 Quadtree.prototype.getQuadLines = function() {
     
     // If root is null or uninitialized, log an error and return an empty array;
@@ -167,5 +170,4 @@ Quadtree.prototype._linesHelper = function(node, lineArray) {
 };
 
 
-Quadtree.prototype.getMaxObjsPerNode = function() { return this.maxObjects; };
-Quadtree.prototype.getMaxDepth = function() { return this.maxDepth; };
+
