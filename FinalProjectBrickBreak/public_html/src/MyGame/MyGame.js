@@ -36,7 +36,7 @@ MyGame.prototype.initialize = function () {
     
     
 
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 100; i++) {
         var dyePack = new DyePack(this.kMinionSprite);
         this.mObjectArray.push(dyePack);
     }
@@ -70,5 +70,5 @@ MyGame.prototype.draw = function () {
 MyGame.prototype.update = function () {
 
     this.mObjectManager.update();
-    gUpdateObjects(this.mObjectArray.length, this.mObjectManager.quadMode);
+    gUpdateObjects(this.mObjectArray.length, this.mObjectManager.quadMode, this.mObjectManager.visualization, );
 };

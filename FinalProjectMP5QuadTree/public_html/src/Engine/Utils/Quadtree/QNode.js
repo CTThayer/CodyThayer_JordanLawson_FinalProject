@@ -32,9 +32,10 @@ QNode.prototype.split = function() {
     // Move objects from parent node into child nodes, then clear parent objects array
     var count = this.objects.length;
     for(var i = 0; i < count; i++) {
-        var quads = this.getQuadrants(this.objects[i]);
+        var objBounds = this._getObjectBounds(this.objects[i]);
+        var quads = this.getQuadrants(objBounds);
         for(var j = 0; j < quads.length; j++) {
-            this.nodes[j].push(this.objects[i]);
+            this.nodes[quads[j]].objects.push(this.objects[i]);
         }
     }
     this.objects = [];
@@ -43,40 +44,39 @@ QNode.prototype.split = function() {
 QNode.prototype.testBounds = function(otherBounds) {
     if( this.bounds[0] < otherBounds[1] &&   // nodeMinX < otherMaxX
         this.bounds[1] > otherBounds[0] &&   // nodeMaxX > otherMinX
-        this.bounds[2] < otherBounds[3] &&   // nodeMinY > otherMaxY
+        this.bounds[2] < otherBounds[3] &&   // nodeMinY < otherMaxY
         this.bounds[3] > otherBounds[2] ) {  // nodeMaxY > otherMinY
             return true;
     } else {return false;}
 };
 
-QNode.prototype.getQuadrants = function(region) {
+QNode.prototype.getQuadrants = function(bounds) {
     if (this.nodes.length !== 4)
         return [-1];
     else {
         var quadrants = [];
         for(var i = 0; i < 4; i++) {
-            if(this.nodes[0].testBounds(region)) {
-                quadrants.push(0);
-            }
-            if(this.nodes[1].testBounds(region)) {
-                quadrants.push(1);
-            }
-            if(this.nodes[2].testBounds(region)) {
-                quadrants.push(2);
-            }
-            if(this.nodes[3].testBounds(region)) {
-                quadrants.push(3);
+            if(this.nodes[i].testBounds(bounds)) {
+                quadrants.push(i);
             }
         }
+        return quadrants;
     }
 };
 
 QNode.prototype.clear = function() {
-    if(this.nodes != null) {
-        this.nodes[0].clear();
-        this.nodes[1].clear();
-        this.nodes[2].clear();
-        this.nodes[3].clear();
+    for(var i = 0; i < this.nodes.length; i++){
+        //tempNodes.push(this.nodes[i]);
+        this.nodes[i].clear();
+        this.nodes[i] = null;
     }
-    delete this;
+};
+
+QNode.prototype._getObjectBounds = function(object) {
+    var minX = object.getXform().getXPos() - (object.getXform().getWidth() / 2);
+    var maxX = object.getXform().getXPos() + (object.getXform().getWidth() / 2);
+    var minY = object.getXform().getYPos() - (object.getXform().getHeight() / 2);
+    var maxY = object.getXform().getYPos() + (object.getXform().getHeight() / 2);
+    var bounds = [minX, maxX, minY, maxY];
+    return bounds;
 };

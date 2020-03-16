@@ -127,9 +127,9 @@ ObjectManager.prototype.update = function () {
         var quadrant = Array.from(this.quadTree.getObjectsNear(this.objectArray[0]));
         
         for (var i = 0; i < quadrant.length; i++) {
-            quadrant[i].mDyePack.setColor([0, 1, 0, 1]);
+            quadrant[i].mDyePack.setColor([0, 1, 0, 0.5]);
         }
         
-        this.objectArray[0].mDyePack.setColor([0, 0, 1, 1])
+        this.objectArray[0].mDyePack.setColor([0, 0, 1, 0.5]);
     }
 };

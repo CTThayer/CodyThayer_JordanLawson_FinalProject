@@ -34,7 +34,6 @@
         <!-- Quadtree -->
         <script type="text/javascript" src="src/Engine/Utils/Quadtree/Quadtree.js"></script>
         <script type="text/javascript" src="src/Engine/Utils/Quadtree/QNode.js"></script>
-        <script type="text/javascript" src="src/Engine/Utils/Quadtree/QuadtreeManager.js"></script>
         <!-- Renderables -->
         <script type="text/javascript" src="src/Engine/Renderables/Renderable.js"></script>
         <script type="text/javascript" src="src/Engine/Renderables/TextureRenderable.js"></script>
@@ -103,10 +102,10 @@
             };
         </script>
         <script>
-            var gUpdateObjects = function(objects, mode) {
+            var gUpdateObjects = function(objects, mode, mode2) {
                 var elm = document.getElementById("UpdateObjects");
                 elm.innerHTML =
-                    "<b>QuadTree Mode: </b>" + mode + " <b>Number of Objects </b>" + objects + "<br>";
+                    "<b>QuadTree Mode: </b>" + mode + " <b>Quadrant Mode: </b>" + mode2 + " <b>Number of Objects </b>" + objects + "<br>";
             };
         </script>
     </body>
